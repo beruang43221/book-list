@@ -11,6 +11,8 @@ import (
 
 type CategoryController interface {
 	CreateCategory(context *gin.Context)
+	GetAllCategories(context *gin.Context)
+	GetCategoriesbyID(context *gin.Context)
 }
 
 type categoryController struct {
@@ -41,4 +43,35 @@ func (c *categoryController) CreateCategory(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusCreated, result)
+}
+
+func (c *categoryController) GetAllCategories(context *gin.Context) {
+	categories, err := c.categoryService.GetAllCategories()
+
+	if err != nil {
+		context.JSON(err.Status(), err)
+		return
+	}
+
+	context.JSON(http.StatusOK, categories)
+
+}
+
+func (c *categoryController) GetCategoriesbyID(context *gin.Context) {
+	id, err := helper.GetIdParam(context)
+
+	if err != nil {
+		context.JSON(err.Status(), err)
+		return
+	}
+
+	categories, err := c.categoryService.GetCategoriesbyID(id)
+
+	if err != nil {
+		context.JSON(err.Status(), err)
+		return
+	}
+
+	context.JSON(http.StatusOK, categories)
+
 }

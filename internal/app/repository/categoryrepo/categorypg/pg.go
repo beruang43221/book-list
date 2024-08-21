@@ -33,3 +33,27 @@ func (r *categoryRepository) CreateCategory(category *model.Category) (*model.Ca
 
 	return category, nil
 }
+
+func (r *categoryRepository) GetAllCategories() ([]model.Category, helper.Error) {
+	var categories []model.Category
+
+	err := r.db.Find(&categories).Error
+
+	if err != nil {
+		return nil, helper.ParseError(err)
+	}
+
+	return categories, nil
+}
+
+func (r *categoryRepository) GetCategoriesbyID(id uint) (*model.Category, helper.Error) {
+	var categories model.Category
+
+	err := r.db.First(&categories, id).Error
+
+	if err != nil {
+		return nil, helper.ParseError(err)
+	}
+
+	return &categories, nil
+}

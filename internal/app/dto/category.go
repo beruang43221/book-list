@@ -18,6 +18,20 @@ func (c *CreateCategoryRequest) ToEntity() *model.Category {
 
 type CreateCategoryResponse struct {
 	ID        uint      `json:"id"`
-	Name      string    `json:"type"`
+	Name      string    `json:"Name"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+type GetAllCategoriesResponse struct {
+	ID        uint      `json:"id"`
+	Name      string    `json:"Name"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type GetCategoriesbyIDResponse struct {
+	ID        uint      `json:"id"`
+	Name      string    `json:"Name"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
