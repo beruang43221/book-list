@@ -9,4 +9,6 @@ type CategoryRepository interface {
 	CreateCategory(category *model.Category) (*model.Category, helper.Error)
 	GetAllCategories() ([]model.Category, helper.Error)
 	GetCategoriesbyID(id uint) (*model.Category, helper.Error)
+	UpdateCategory(oldCategory *model.Category, newCategory *model.Category) (*model.Category, helper.Error)
+	DeleteCategory(category *model.Category) helper.Error
 }

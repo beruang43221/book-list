@@ -57,3 +57,25 @@ func (r *categoryRepository) GetCategoriesbyID(id uint) (*model.Category, helper
 
 	return &categories, nil
 }
+
+func (t *categoryRepository) UpdateCategory(oldCategory *model.Category, newCategory *model.Category) (*model.Category, helper.Error) {
+
+	err := t.db.Model(&oldCategory).Updates(newCategory)
+
+	if err.Error != nil {
+		return nil, helper.ParseError(err.Error)
+	}
+
+	return oldCategory, nil
+}
+
+func (t *categoryRepository) DeleteCategory(category *model.Category) helper.Error {
+
+	err := t.db.Delete(&category)
+
+	if err.Error != nil {
+		return helper.ParseError(err.Error)
+	}
+
+	return nil
+}

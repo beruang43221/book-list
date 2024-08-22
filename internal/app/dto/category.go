@@ -35,3 +35,21 @@ type GetCategoriesbyIDResponse struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+type UpdateCategoryRequest CreateCategoryRequest
+
+func (c *UpdateCategoryRequest) ToEntity() *model.Category {
+	return &model.Category{
+		Name: c.Name,
+	}
+}
+
+type UpdateCategoryResponse struct {
+	ID        uint      `json:"id"`
+	Name      string    `json:"Name"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type DeleteCategoryResponse struct {
+	Message string `json:"message"`
+}

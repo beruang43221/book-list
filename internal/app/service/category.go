@@ -10,6 +10,8 @@ type CategoryService interface {
 	CreateCategory(reqCategory *dto.CreateCategoryRequest) (*dto.CreateCategoryResponse, helper.Error)
 	GetAllCategories() ([]dto.GetAllCategoriesResponse, helper.Error)
 	GetCategoriesbyID(id uint) (*dto.GetCategoriesbyIDResponse, helper.Error)
+	UpdateCategory(categoryId uint, update *dto.UpdateCategoryRequest) (*dto.UpdateCategoryResponse, helper.Error)
+	DeleteCategory(categoryId uint) (*dto.DeleteCategoryResponse, helper.Error)
 }
 
 type categoryService struct {
@@ -20,7 +22,6 @@ func NewCategoryService(categoryRepository categoryrepo.CategoryRepository) Cate
 	return &categoryService{
 		categoryRepository: categoryRepository,
 	}
-
 }
 
 func (s *categoryService) CreateCategory(reqCategory *dto.CreateCategoryRequest) (*dto.CreateCategoryResponse, helper.Error) {
@@ -74,6 +75,45 @@ func (s *categoryService) GetCategoriesbyID(id uint) (*dto.GetCategoriesbyIDResp
 		Name:      categories.Name,
 		CreatedAt: categories.CreatedAt,
 		UpdatedAt: categories.UpdatedAt,
+	}
+
+	return response, nil
+}
+
+func (s *categoryService) UpdateCategory(categoryId uint, update *dto.UpdateCategoryRequest) (*dto.UpdateCategoryResponse, helper.Error) {
+	oldCategory, err := s.categoryRepository.GetCategoriesbyID(categoryId)
+
+	if err != nil {
+		return nil, err
+	}
+	newCategory := update.ToEntity()
+
+	result, err2 := s.categoryRepository.UpdateCategory(oldCategory, newCategory)
+	if err2 != nil {
+		return nil, err2
+	}
+	response := &dto.UpdateCategoryResponse{
+		ID:        result.ID,
+		Name:      result.Name,
+		UpdatedAt: result.UpdatedAt,
+	}
+
+	return response, nil
+}
+
+func (s *categoryService) DeleteCategory(categoryId uint) (*dto.DeleteCategoryResponse, helper.Error) {
+	categories, err := s.categoryRepository.GetCategoriesbyID(categoryId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.categoryRepository.DeleteCategory(categories); err != nil {
+		return nil, err
+	}
+
+	response := &dto.DeleteCategoryResponse{
+		Message: "Category has been successfully deleted",
 	}
 
 	return response, nil

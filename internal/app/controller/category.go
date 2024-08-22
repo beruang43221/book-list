@@ -13,6 +13,8 @@ type CategoryController interface {
 	CreateCategory(context *gin.Context)
 	GetAllCategories(context *gin.Context)
 	GetCategoriesbyID(context *gin.Context)
+	UpdateCategory(context *gin.Context)
+	DeleteCategory(context *gin.Context)
 }
 
 type categoryController struct {
@@ -54,7 +56,6 @@ func (c *categoryController) GetAllCategories(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, categories)
-
 }
 
 func (c *categoryController) GetCategoriesbyID(context *gin.Context) {
@@ -73,5 +74,37 @@ func (c *categoryController) GetCategoriesbyID(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, categories)
+}
 
+func (c *categoryController) UpdateCategory(context *gin.Context) {
+	categoryId, _ := helper.GetIdParam(context)
+	var requestBody dto.UpdateCategoryRequest
+
+	if err := context.ShouldBindJSON(&requestBody); err != nil {
+		errorHandler := helper.UnprocessibleEntity("Invalid JSON body")
+
+		context.JSON(errorHandler.Status(), errorHandler)
+		return
+	}
+
+	update, err := c.categoryService.UpdateCategory(categoryId, &requestBody)
+	if err != nil {
+		context.JSON(err.Status(), err)
+		return
+	}
+
+	context.JSON(http.StatusOK, update)
+}
+
+func (c *categoryController) DeleteCategory(context *gin.Context) {
+	id, _ := helper.GetIdParam(context)
+
+	delete, err := c.categoryService.DeleteCategory(id)
+
+	if err != nil {
+		context.JSON(err.Status(), err)
+		return
+	}
+
+	context.JSON(http.StatusOK, delete)
 }

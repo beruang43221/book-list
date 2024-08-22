@@ -34,8 +34,8 @@ func StartServer() {
 		categoryRouter.POST("/", categoryController.CreateCategory)
 		categoryRouter.GET("/", categoryController.GetAllCategories)
 		categoryRouter.GET("/:id", categoryController.GetCategoriesbyID)
-		// categoryRouter.PUT("/:id", controller.UpdateCategory)
-		// categoryRouter.DELETE("/:id", controller.DeleteCategory)
+		categoryRouter.PUT("/:id", categoryController.UpdateCategory)
+		categoryRouter.DELETE("/:id", categoryController.DeleteCategory)
 	}
 
 	// bookRouter := router.Group("/books")
