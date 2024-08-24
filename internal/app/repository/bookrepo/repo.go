@@ -8,4 +8,8 @@ import (
 type BookRepository interface {
 	CreateBook(book *model.Book) (*model.Book, helper.Error)
 	GetAllBooks() ([]model.Book, helper.Error)
+	GetBookById(id uint) (*model.Book, helper.Error)
+	UpdateBook(oldBook *model.Book, newBook *model.Book) (*model.Book, helper.Error)
+	DeleteBook(book *model.Book) helper.Error
+	GetBooksByCategoriesID(categoriesID uint) ([]model.Book, helper.Error)
 }

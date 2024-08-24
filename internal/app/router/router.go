@@ -47,11 +47,11 @@ func StartServer() {
 	{
 		bookRouter.POST("/", bookController.CreateBook)
 		bookRouter.GET("/", bookController.GetAllBooks)
+		bookRouter.PUT("/:id", bookController.UpdateBook) // buat jika category gk ada itu error
+		bookRouter.DELETE("/:id", bookController.DeleteBook)
+		bookRouter.GET("/category/:category_id", bookController.GetBooksByCategories) // ganti filter dan benerin error
 		// bookRouter.GET("", controller.FilterBooksBySearchText)
 		// bookRouter.GET("/filter", controller.GetBooksByDate)
-		// bookRouter.GET("/category/:category_id", controller.GetBooksByCategories)
-		// bookRouter.PUT("/:id", controller.UpdateBook)
-		// bookRouter.DELETE("/:id", controller.DeleteBook)
 	}
 
 	var PORT = os.Getenv("PORT")

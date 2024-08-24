@@ -47,3 +47,52 @@ type GetAllBooksResponse struct {
 	CategoryID  uint      `json:"category_id" `
 	CreatedAt   time.Time `json:"created_at"`
 }
+
+type GetBookByIdResponse GetAllBooksResponse
+
+type UpdateBookRequest CreateBookRequest
+
+func (c *UpdateBookRequest) ToEntity() *model.Book {
+	return &model.Book{
+		Title:       c.Title,
+		Author:      c.Author,
+		Publication: c.Publication,
+		Publisher:   c.Publisher,
+		Pages:       c.Pages,
+		CategoryID:  c.CategoryID,
+	}
+}
+
+type UpdateBookBookResponse struct {
+	ID          uint      `json:"id"`
+	Title       string    `json:"title" `
+	Author      string    `json:"author"`
+	Publication time.Time `json:"publication" `
+	Publisher   string    `json:"publisher" `
+	Pages       uint      `json:"pages" `
+	CategoryID  uint      `json:"category_id" `
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type DeleteBookResponse struct {
+	Message string `json:"message"`
+}
+
+type GetBooksbyCategoriesIdResponse struct {
+	ID          uint      `json:"id"`
+	Title       string    `json:"title" `
+	Author      string    `json:"author"`
+	Publication time.Time `json:"publication" `
+	Publisher   string    `json:"publisher" `
+	Pages       uint      `json:"pages" `
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	Category    Category  `json:"category"`
+}
+
+type Category struct {
+	ID        uint      `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}

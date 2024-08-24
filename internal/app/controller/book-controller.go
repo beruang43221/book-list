@@ -12,6 +12,9 @@ import (
 type BookController interface {
 	CreateBook(context *gin.Context)
 	GetAllBooks(context *gin.Context)
+	UpdateBook(context *gin.Context)
+	DeleteBook(context *gin.Context)
+	GetBooksByCategories(context *gin.Context)
 }
 
 type bookController struct {
@@ -53,4 +56,55 @@ func (c *bookController) GetAllBooks(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, books)
+}
+
+func (c *bookController) UpdateBook(context *gin.Context) {
+	bookId, _ := helper.GetIdParam(context)
+	var requestBody dto.UpdateBookRequest
+
+	if err := context.ShouldBindJSON(&requestBody); err != nil {
+		errorHandler := helper.UnprocessibleEntity("Invalid JSON body")
+
+		context.JSON(errorHandler.Status(), errorHandler)
+		return
+	}
+
+	update, err := c.bookService.UpdateBook(bookId, &requestBody)
+	if err != nil {
+		context.JSON(err.Status(), err)
+		return
+	}
+
+	context.JSON(http.StatusOK, update)
+}
+
+func (c *bookController) DeleteBook(context *gin.Context) {
+	id, _ := helper.GetIdParam(context)
+
+	delete, err := c.bookService.DeleteBook(id)
+
+	if err != nil {
+		context.JSON(err.Status(), err)
+		return
+	}
+
+	context.JSON(http.StatusOK, delete)
+}
+
+func (c *bookController) GetBooksByCategories(context *gin.Context) {
+	id, err := helper.GetCategoryIDParam(context)
+
+	if err != nil {
+		context.JSON(err.Status(), err)
+		return
+	}
+
+	results, err := c.bookService.GetBooksByCategoriesID(id)
+
+	if err != nil {
+		context.JSON(err.Status(), err)
+		return
+	}
+
+	context.JSON(http.StatusOK, results)
 }
