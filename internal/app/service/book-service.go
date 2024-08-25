@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+
 	"github.com/beruang43221/book-list/internal/app/dto"
 	"github.com/beruang43221/book-list/internal/app/helper"
 	"github.com/beruang43221/book-list/internal/app/repository/bookrepo"
@@ -14,6 +16,7 @@ type BookService interface {
 	UpdateBook(bookId uint, update *dto.UpdateBookRequest) (*dto.UpdateBookBookResponse, helper.Error)
 	DeleteBook(bookId uint) (*dto.DeleteBookResponse, helper.Error)
 	GetBooksByCategoriesID(id uint) ([]dto.GetBooksbyCategoriesIdResponse, helper.Error)
+	GetBooksByDate(startDate, endDate time.Time) ([]dto.GetBooksByDateResponse, helper.Error)
 }
 
 type bookService struct {
@@ -59,7 +62,6 @@ func (s *bookService) CreateBook(reqBook *dto.CreateBookRequest) (*dto.CreateBoo
 
 	return response, nil
 }
-
 func (s *bookService) GetAllBooks() ([]dto.GetAllBooksResponse, helper.Error) {
 	books, err := s.bookRepository.GetAllBooks()
 
@@ -84,7 +86,6 @@ func (s *bookService) GetAllBooks() ([]dto.GetAllBooksResponse, helper.Error) {
 
 	return response, nil
 }
-
 func (s *bookService) GetBookById(id uint) (*dto.GetBookByIdResponse, helper.Error) {
 	book, err := s.bookRepository.GetBookById(id)
 
@@ -105,7 +106,6 @@ func (s *bookService) GetBookById(id uint) (*dto.GetBookByIdResponse, helper.Err
 
 	return response, nil
 }
-
 func (s *bookService) UpdateBook(bookId uint, update *dto.UpdateBookRequest) (*dto.UpdateBookBookResponse, helper.Error) {
 	oldBook, err := s.bookRepository.GetBookById(bookId)
 
@@ -177,4 +177,27 @@ func (s *bookService) GetBooksByCategoriesID(id uint) ([]dto.GetBooksbyCategorie
 		})
 	}
 	return response, nil
+}
+func (s *bookService) GetBooksByDate(startDate, endDate time.Time) ([]dto.GetBooksByDateResponse, helper.Error) {
+	books, err := s.bookRepository.GetBooksByDate(startDate, endDate)
+	if err != nil {
+		return nil, err
+	}
+
+	var responses []dto.GetBooksByDateResponse
+
+	for _, book := range books {
+		responses = append(responses, dto.GetBooksByDateResponse{
+			ID:          book.ID,
+			Title:       book.Title,
+			Author:      book.Author,
+			Publication: book.Publication,
+			Publisher:   book.Publisher,
+			Pages:       book.Pages,
+			CategoryID:  book.CategoryID,
+			CreatedAt:   book.CreatedAt,
+		})
+	}
+
+	return responses, nil
 }

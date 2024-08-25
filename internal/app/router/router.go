@@ -51,7 +51,7 @@ func StartServer() {
 		bookRouter.DELETE("/:id", bookController.DeleteBook)
 		bookRouter.GET("/category/:category_id", bookController.GetBooksByCategories) // ganti filter dan benerin error
 		// bookRouter.GET("", controller.FilterBooksBySearchText)
-		// bookRouter.GET("/filter", controller.GetBooksByDate)
+		bookRouter.GET("/filter", bookController.GetBooksByDate) // penanganann error msh acakadul
 	}
 
 	var PORT = os.Getenv("PORT")

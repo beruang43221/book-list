@@ -1,6 +1,8 @@
 package bookpg
 
 import (
+	"time"
+
 	"github.com/beruang43221/book-list/internal/app/helper"
 	"github.com/beruang43221/book-list/internal/app/model"
 	"github.com/beruang43221/book-list/internal/app/repository/bookrepo"
@@ -70,6 +72,17 @@ func (r *bookRepository) DeleteBook(book *model.Book) helper.Error {
 func (r *bookRepository) GetBooksByCategoriesID(categoriesID uint) ([]model.Book, helper.Error) {
 	var books []model.Book
 	result := r.db.Preload("Category").Where("category_id = ?", categoriesID).Find(&books)
+
+	if result.Error != nil {
+		return nil, helper.ParseError(result.Error)
+	}
+
+	return books, nil
+}
+func (r *bookRepository) GetBooksByDate(startDate, endDate time.Time) ([]model.Book, helper.Error) {
+	var books []model.Book
+
+	result := r.db.Where("publication BETWEEN ? AND ?", startDate, endDate).Find(&books)
 
 	if result.Error != nil {
 		return nil, helper.ParseError(result.Error)

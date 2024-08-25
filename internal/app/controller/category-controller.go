@@ -31,7 +31,7 @@ func (c *categoryController) CreateCategory(context *gin.Context) {
 	var reqCategory dto.CreateCategoryRequest
 
 	if err := context.ShouldBindJSON(&reqCategory); err != nil {
-		errorHandler := helper.UnprocessibleEntity("Invalid JSON body")
+		errorHandler := helper.UnprocessableEntity("Invalid JSON body")
 
 		context.JSON(errorHandler.Status(), errorHandler)
 		return
@@ -81,7 +81,7 @@ func (c *categoryController) UpdateCategory(context *gin.Context) {
 	var requestBody dto.UpdateCategoryRequest
 
 	if err := context.ShouldBindJSON(&requestBody); err != nil {
-		errorHandler := helper.UnprocessibleEntity("Invalid JSON body")
+		errorHandler := helper.UnprocessableEntity("Invalid JSON body")
 
 		context.JSON(errorHandler.Status(), errorHandler)
 		return

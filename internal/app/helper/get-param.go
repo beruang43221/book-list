@@ -2,6 +2,7 @@ package helper
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,28 +37,12 @@ func GetCategoryIDParam(context *gin.Context) (uint, Error) {
 	return uint(categoryID), nil
 }
 
-// func GetStringTitle(context *gin.Context, title string) (string, Error) {
-// 	titleValue := context.Query(title)
-// 	if titleValue == "" {
-// 		return "", BadRequest("Parameter is required")
+func GetQueryDateParam(context *gin.Context) (startDate, endDate string, err error) {
+	startDate = context.Query("startDate")
+	endDate = context.Query("endDate")
+	return startDate, endDate, nil
+}
 
-// 	}
-// 	return titleValue, nil
-// }
-
-// func GetStringAuthor(context *gin.Context, paramName string) (string, Error) {
-// 	paramValue := context.Param(paramName)
-// 	if paramValue == "" {
-// 		return "", BadRequest("Parameter is required")
-
-// 	}
-// 	return paramValue, nil
-// }
-// func GetStringPublisher(context *gin.Context, paramName string) (string, Error) {
-// 	paramValue := context.Param(paramName)
-// 	if paramValue == "" {
-// 		return "", BadRequest("Parameter is required")
-
-// 	}
-// 	return paramValue, nil
-// }
+func ParseDate(dateStr string) (time.Time, error) {
+	return time.Parse("2006-01-02", dateStr)
+}

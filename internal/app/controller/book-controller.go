@@ -15,6 +15,7 @@ type BookController interface {
 	UpdateBook(context *gin.Context)
 	DeleteBook(context *gin.Context)
 	GetBooksByCategories(context *gin.Context)
+	GetBooksByDate(context *gin.Context)
 }
 
 type bookController struct {
@@ -31,7 +32,7 @@ func (c *bookController) CreateBook(context *gin.Context) {
 	var reqBook dto.CreateBookRequest
 
 	if err := context.ShouldBindJSON(&reqBook); err != nil {
-		errorHandler := helper.UnprocessibleEntity("Invalid JSON body")
+		errorHandler := helper.UnprocessableEntity("Invalid JSON body")
 
 		context.JSON(errorHandler.Status(), errorHandler)
 		return
@@ -63,7 +64,7 @@ func (c *bookController) UpdateBook(context *gin.Context) {
 	var requestBody dto.UpdateBookRequest
 
 	if err := context.ShouldBindJSON(&requestBody); err != nil {
-		errorHandler := helper.UnprocessibleEntity("Invalid JSON body")
+		errorHandler := helper.UnprocessableEntity("Invalid JSON body")
 
 		context.JSON(errorHandler.Status(), errorHandler)
 		return
@@ -107,4 +108,36 @@ func (c *bookController) GetBooksByCategories(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, results)
+}
+
+func (c *bookController) GetBooksByDate(context *gin.Context) {
+	startDate, endDate, err := helper.GetQueryDateParam(context)
+	if err != nil {
+		errorHandler := helper.BadRequest(err.Error())
+		context.JSON(errorHandler.Status(), errorHandler)
+		return
+	}
+
+	startDateStr, err := helper.ParseDate(startDate)
+	if err != nil {
+		errorHandler := helper.BadRequest(err.Error())
+		context.JSON(errorHandler.Status(), errorHandler)
+		return
+	}
+
+	endDateStr, err := helper.ParseDate(endDate)
+	if err != nil {
+		errorHandler := helper.BadRequest(err.Error())
+		context.JSON(errorHandler.Status(), errorHandler)
+		return
+	}
+
+	books, err := c.bookService.GetBooksByDate(startDateStr, endDateStr)
+	if err != nil {
+		errorHandler := helper.InternalServerError(err.Error())
+		context.JSON(errorHandler.Status(), errorHandler)
+		return
+	}
+
+	context.JSON(http.StatusOK, books)
 }

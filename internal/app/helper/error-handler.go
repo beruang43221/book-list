@@ -3,34 +3,34 @@ package helper
 import "net/http"
 
 type Error interface {
-	Message() string
+	Error() string
 	Status() int
 	Type() string
 }
 
-type ErrorResponse struct {
-	ErrorMessage string `json:"message"`
-	ErrorStatus  int    `json:"status"`
-	ErrorType    string `json:"error"`
+type errorResponse struct {
+	message string
+	status  int
+	errType string
 }
 
-func (e *ErrorResponse) Message() string {
-	return e.ErrorMessage
+func (e *errorResponse) Error() string {
+	return e.message
 }
 
-func (e *ErrorResponse) Status() int {
-	return e.ErrorStatus
+func (e *errorResponse) Status() int {
+	return e.status
 }
 
-func (e *ErrorResponse) Type() string {
-	return e.ErrorType
+func (e *errorResponse) Type() string {
+	return e.errType
 }
 
-func NewError(message string, status int, ErrorType string) Error {
-	return &ErrorResponse{
-		ErrorMessage: message,
-		ErrorStatus:  status,
-		ErrorType:    ErrorType,
+func NewError(message string, status int, errType string) Error {
+	return &errorResponse{
+		message: message,
+		status:  status,
+		errType: errType,
 	}
 }
 
@@ -38,7 +38,7 @@ func BadRequest(message string) Error {
 	return NewError(message, http.StatusBadRequest, "Bad Request")
 }
 
-func Unautorized(message string) Error {
+func Unauthorized(message string) Error {
 	return NewError(message, http.StatusUnauthorized, "Unauthorized")
 }
 
@@ -46,7 +46,7 @@ func NotFound(message string) Error {
 	return NewError(message, http.StatusNotFound, "Not Found")
 }
 
-func UnprocessibleEntity(message string) Error {
+func UnprocessableEntity(message string) Error {
 	return NewError(message, http.StatusUnprocessableEntity, "Invalid Request")
 }
 
