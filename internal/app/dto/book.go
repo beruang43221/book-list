@@ -98,3 +98,5 @@ type Category struct {
 }
 
 type GetBooksByDateResponse GetAllBooksResponse
+
+type GetBooksBySearchTextResponse GetAllBooksResponse

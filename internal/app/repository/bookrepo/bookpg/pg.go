@@ -90,3 +90,24 @@ func (r *bookRepository) GetBooksByDate(startDate, endDate time.Time) ([]model.B
 
 	return books, nil
 }
+func (r *bookRepository) GetBooksBySearchText(title, author, publisher string) ([]model.Book, helper.Error) {
+	var books []model.Book
+
+	query := r.db.Model(&model.Book{})
+
+	if title != "" {
+		query = query.Where("title LIKE ?", "%"+title+"%")
+	}
+	if author != "" {
+		query = query.Where("author LIKE ?", "%"+author+"%")
+	}
+	if publisher != "" {
+		query = query.Where("publisher LIKE ?", "%"+publisher+"%")
+	}
+
+	if err := query.Find(&books).Error; err != nil {
+		return nil, helper.ParseError(err)
+	}
+	return books, nil
+
+}

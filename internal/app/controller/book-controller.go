@@ -16,6 +16,7 @@ type BookController interface {
 	DeleteBook(context *gin.Context)
 	GetBooksByCategories(context *gin.Context)
 	GetBooksByDate(context *gin.Context)
+	FilterBooksBySearchText(context *gin.Context)
 }
 
 type bookController struct {
@@ -133,6 +134,25 @@ func (c *bookController) GetBooksByDate(context *gin.Context) {
 	}
 
 	books, err := c.bookService.GetBooksByDate(startDateStr, endDateStr)
+	if err != nil {
+		errorHandler := helper.InternalServerError(err.Error())
+		context.JSON(errorHandler.Status(), errorHandler)
+		return
+	}
+
+	context.JSON(http.StatusOK, books)
+}
+
+func (c *bookController) FilterBooksBySearchText(context *gin.Context) {
+	title, author, publisher, err := helper.GetQuerySearchParam(context)
+	if err != nil {
+		errorHandler := helper.BadRequest(err.Error())
+		context.JSON(errorHandler.Status(), errorHandler)
+		return
+	}
+
+	books, err := c.bookService.GetBooksBySearchText(title, author, publisher)
+
 	if err != nil {
 		errorHandler := helper.InternalServerError(err.Error())
 		context.JSON(errorHandler.Status(), errorHandler)

@@ -15,4 +15,5 @@ type BookRepository interface {
 	DeleteBook(book *model.Book) helper.Error
 	GetBooksByCategoriesID(categoriesID uint) ([]model.Book, helper.Error)
 	GetBooksByDate(startDate, endDate time.Time) ([]model.Book, helper.Error)
+	GetBooksBySearchText(title, author, publisher string) ([]model.Book, helper.Error)
 }

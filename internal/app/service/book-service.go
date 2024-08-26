@@ -17,6 +17,7 @@ type BookService interface {
 	DeleteBook(bookId uint) (*dto.DeleteBookResponse, helper.Error)
 	GetBooksByCategoriesID(id uint) ([]dto.GetBooksbyCategoriesIdResponse, helper.Error)
 	GetBooksByDate(startDate, endDate time.Time) ([]dto.GetBooksByDateResponse, helper.Error)
+	GetBooksBySearchText(title, author, publisher string) ([]dto.GetBooksBySearchTextResponse, helper.Error)
 }
 
 type bookService struct {
@@ -188,6 +189,29 @@ func (s *bookService) GetBooksByDate(startDate, endDate time.Time) ([]dto.GetBoo
 
 	for _, book := range books {
 		responses = append(responses, dto.GetBooksByDateResponse{
+			ID:          book.ID,
+			Title:       book.Title,
+			Author:      book.Author,
+			Publication: book.Publication,
+			Publisher:   book.Publisher,
+			Pages:       book.Pages,
+			CategoryID:  book.CategoryID,
+			CreatedAt:   book.CreatedAt,
+		})
+	}
+
+	return responses, nil
+}
+func (s *bookService) GetBooksBySearchText(title, author, publisher string) ([]dto.GetBooksBySearchTextResponse, helper.Error) {
+	books, err := s.bookRepository.GetBooksBySearchText(title, author, publisher)
+
+	if err != nil {
+		return nil, err
+	}
+	var responses []dto.GetBooksBySearchTextResponse
+
+	for _, book := range books {
+		responses = append(responses, dto.GetBooksBySearchTextResponse{
 			ID:          book.ID,
 			Title:       book.Title,
 			Author:      book.Author,

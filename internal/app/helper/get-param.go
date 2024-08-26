@@ -46,3 +46,14 @@ func GetQueryDateParam(context *gin.Context) (startDate, endDate string, err err
 func ParseDate(dateStr string) (time.Time, error) {
 	return time.Parse("2006-01-02", dateStr)
 }
+
+func GetQuerySearchParam(context *gin.Context) (title, author, publisher string, err error) {
+	title = context.Query("title")
+	author = context.Query("author")
+	publisher = context.Query("publisher")
+
+	if title == "" && author == "" && publisher == "" {
+		return "", "", "", BadRequest("at least one search parameter is required")
+	}
+	return title, author, publisher, nil
+}
