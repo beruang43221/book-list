@@ -49,10 +49,8 @@ func (r *categoryRepository) GetAllCategories() ([]model.Category, helper.Error)
 func (r *categoryRepository) GetCategoriesbyID(id uint) (*model.Category, helper.Error) {
 	var categories model.Category
 
-	err := r.db.First(&categories, id).Error
-
-	if err != nil {
-		return nil, helper.ParseError(err)
+	if err := r.db.First(&categories, id).Error; err != nil {
+		return nil, helper.NotFound("category is not found")
 	}
 
 	return &categories, nil

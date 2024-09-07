@@ -32,8 +32,7 @@ func (c *categoryController) CreateCategory(context *gin.Context) {
 
 	if err := context.ShouldBindJSON(&reqCategory); err != nil {
 		errorHandler := helper.UnprocessableEntity("Invalid JSON body")
-
-		context.JSON(errorHandler.Status(), errorHandler)
+		context.JSON(errorHandler.StatusCode, errorHandler)
 		return
 	}
 
@@ -44,7 +43,8 @@ func (c *categoryController) CreateCategory(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusCreated, result)
+	response := helper.NewSuccessResponse(result, nil)
+	context.JSON(http.StatusCreated, response)
 }
 
 func (c *categoryController) GetAllCategories(context *gin.Context) {
@@ -54,8 +54,8 @@ func (c *categoryController) GetAllCategories(context *gin.Context) {
 		context.JSON(err.Status(), err)
 		return
 	}
-
-	context.JSON(http.StatusOK, categories)
+	response := helper.NewSuccessResponse(categories, nil)
+	context.JSON(http.StatusOK, response)
 }
 
 func (c *categoryController) GetCategoriesbyID(context *gin.Context) {
@@ -73,7 +73,8 @@ func (c *categoryController) GetCategoriesbyID(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, categories)
+	response := helper.NewSuccessResponse(categories, nil)
+	context.JSON(http.StatusOK, response)
 }
 
 func (c *categoryController) UpdateCategory(context *gin.Context) {
@@ -83,7 +84,7 @@ func (c *categoryController) UpdateCategory(context *gin.Context) {
 	if err := context.ShouldBindJSON(&requestBody); err != nil {
 		errorHandler := helper.UnprocessableEntity("Invalid JSON body")
 
-		context.JSON(errorHandler.Status(), errorHandler)
+		context.JSON(errorHandler.StatusCode, errorHandler)
 		return
 	}
 
@@ -92,8 +93,8 @@ func (c *categoryController) UpdateCategory(context *gin.Context) {
 		context.JSON(err.Status(), err)
 		return
 	}
-
-	context.JSON(http.StatusOK, update)
+	response := helper.NewSuccessResponse(update, nil)
+	context.JSON(http.StatusOK, response)
 }
 
 func (c *categoryController) DeleteCategory(context *gin.Context) {
@@ -106,5 +107,6 @@ func (c *categoryController) DeleteCategory(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, delete)
+	response := helper.NewSuccessResponse(delete, nil)
+	context.JSON(http.StatusOK, response)
 }

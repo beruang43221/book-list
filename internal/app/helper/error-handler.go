@@ -8,48 +8,37 @@ type Error interface {
 	Type() string
 }
 
-type errorResponse struct {
+type customError struct {
 	message string
 	status  int
 	errType string
 }
 
-func (e *errorResponse) Error() string {
+func (e *customError) Error() string {
 	return e.message
 }
 
-func (e *errorResponse) Status() int {
+func (e *customError) Status() int {
 	return e.status
 }
 
-func (e *errorResponse) Type() string {
+func (e *customError) Type() string {
 	return e.errType
 }
 
-func NewError(message string, status int, errType string) Error {
-	return &errorResponse{
-		message: message,
-		status:  status,
-		errType: errType,
+func NewErrorResponse(message string, data interface{}, code int) Response {
+	return Response{
+		StatusCode: code,
+		Status:     "error",
+		Data:       data,
+		Message:    &message,
 	}
 }
 
-func BadRequest(message string) Error {
-	return NewError(message, http.StatusBadRequest, "Bad Request")
+func Unauthorized(message string) Response {
+	return NewErrorResponse(message, nil, http.StatusUnauthorized)
 }
 
-func Unauthorized(message string) Error {
-	return NewError(message, http.StatusUnauthorized, "Unauthorized")
-}
-
-func NotFound(message string) Error {
-	return NewError(message, http.StatusNotFound, "Not Found")
-}
-
-func UnprocessableEntity(message string) Error {
-	return NewError(message, http.StatusUnprocessableEntity, "Invalid Request")
-}
-
-func InternalServerError(message string) Error {
-	return NewError(message, http.StatusInternalServerError, "Server Error")
+func UnprocessableEntity(message string) Response {
+	return NewErrorResponse(message, nil, http.StatusUnprocessableEntity)
 }

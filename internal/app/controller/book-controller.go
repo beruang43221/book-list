@@ -34,8 +34,7 @@ func (c *bookController) CreateBook(context *gin.Context) {
 
 	if err := context.ShouldBindJSON(&reqBook); err != nil {
 		errorHandler := helper.UnprocessableEntity("Invalid JSON body")
-
-		context.JSON(errorHandler.Status(), errorHandler)
+		context.JSON(errorHandler.StatusCode, errorHandler)
 		return
 	}
 
@@ -46,7 +45,8 @@ func (c *bookController) CreateBook(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusCreated, result)
+	response := helper.NewSuccessResponse(result, nil)
+	context.JSON(http.StatusCreated, response)
 }
 
 func (c *bookController) GetAllBooks(context *gin.Context) {
@@ -57,7 +57,8 @@ func (c *bookController) GetAllBooks(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, books)
+	response := helper.NewSuccessResponse(books, nil)
+	context.JSON(http.StatusOK, response)
 }
 
 func (c *bookController) UpdateBook(context *gin.Context) {
@@ -67,7 +68,7 @@ func (c *bookController) UpdateBook(context *gin.Context) {
 	if err := context.ShouldBindJSON(&requestBody); err != nil {
 		errorHandler := helper.UnprocessableEntity("Invalid JSON body")
 
-		context.JSON(errorHandler.Status(), errorHandler)
+		context.JSON(errorHandler.StatusCode, errorHandler)
 		return
 	}
 
@@ -77,7 +78,8 @@ func (c *bookController) UpdateBook(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, update)
+	response := helper.NewSuccessResponse(update, nil)
+	context.JSON(http.StatusOK, response)
 }
 
 func (c *bookController) DeleteBook(context *gin.Context) {
@@ -90,7 +92,8 @@ func (c *bookController) DeleteBook(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, delete)
+	response := helper.NewSuccessResponse(delete, nil)
+	context.JSON(http.StatusOK, response)
 }
 
 func (c *bookController) GetBooksByCategories(context *gin.Context) {
@@ -107,8 +110,8 @@ func (c *bookController) GetBooksByCategories(context *gin.Context) {
 		context.JSON(err.Status(), err)
 		return
 	}
-
-	context.JSON(http.StatusOK, results)
+	response := helper.NewSuccessResponse(results, nil)
+	context.JSON(http.StatusOK, response)
 }
 
 func (c *bookController) GetBooksByDate(context *gin.Context) {
@@ -140,14 +143,15 @@ func (c *bookController) GetBooksByDate(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, books)
+	response := helper.NewSuccessResponse(books, nil)
+	context.JSON(http.StatusOK, response)
 }
 
 func (c *bookController) FilterBooksBySearchText(context *gin.Context) {
 	title, author, publisher, err := helper.GetQuerySearchParam(context)
 	if err != nil {
-		errorHandler := helper.BadRequest(err.Error())
-		context.JSON(errorHandler.Status(), errorHandler)
+		errorHandler := helper.BadRequest("Invalid search parameters: " + err.Error())
+		context.JSON(errorHandler.Status(), helper.NewErrorResponse(errorHandler.Error(), nil, errorHandler.Status()))
 		return
 	}
 
@@ -159,5 +163,6 @@ func (c *bookController) FilterBooksBySearchText(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, books)
+	response := helper.NewSuccessResponse(books, nil)
+	context.JSON(http.StatusOK, response)
 }
